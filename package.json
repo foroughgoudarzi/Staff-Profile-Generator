@@ -1,0 +1,25 @@
+{
+  "name": "staff-profile-generator",
+  "version": "1.0.0",
+  "description": "It generates profile for staff.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foroughgoudarzi/Staff-Profile-Generator.git"
+  },
+  "author": "Forough Goudarzi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foroughgoudarzi/Staff-Profile-Generator/issues"
+  },
+  "homepage": "https://github.com/foroughgoudarzi/Staff-Profile-Generator#readme",
+  "dependencies": {
+    "inquirer": "^8.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
