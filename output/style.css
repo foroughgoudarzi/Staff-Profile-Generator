@@ -1,0 +1,23 @@
+.team-heading {
+    background-color: black;
+    color: white;
+    text-shadow: 4px 4px 5px rgb(235, 235, 15);
+}
+
+.card-header {
+    background-color: #ffc300;
+}
+
+.card-body {
+    background-color: #ffe6a7;
+}
+
+.employee-card {
+    box-shadow: 0 4px 8px 0 rgba(30, 29, 27, 0.2), 0 6px 20px 0 rgba(12, 0, 0, 0.19);
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.team-area {
+    flex-wrap: wrap;
+}
