@@ -7,49 +7,48 @@ const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
-
 const render = require("./assets/src/page-template.js");
 
-
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-// Array of questions for user
-const generalQuestions = role => {return [
-    {
-        type: 'input',
-        name: 'name',
-        message: `What is the ${role}'s name?`,
-        validate(text) {
-            if (text.length != 0 && /^[a-zA-Z]+$/.test(text)) {
-                return true;
-            }
-            return `Enter a valid name:`;
+// Array of general questions for any type of employee
+const generalQuestions = role => {
+    return [
+        {
+            type: 'input',
+            name: 'name',
+            message: `What is the ${role}'s name?`,
+            validate(text) {
+                if (/^[a-zA-Z\s]+$/.test(text) && text.charAt(0) != ' ') {
+                    return true;
+                }
+                return `Enter a valid name:`;
+            },
         },
-    },
-    {
-        type: 'input',
-        name: 'employeeId',
-        message: `What is the ${role}'s ID no?`,
-        validate(text) {
-            if (!isNaN(text)) {
-                return true;
-            }
-            return 'Enter a valid number:';
+        {
+            type: 'input',
+            name: 'employeeId',
+            message: `What is the ${role}'s ID no?`,
+            validate(text) {
+                if (!isNaN(text) && text.length>0) {
+                    return true;
+                }
+                return 'Enter a valid number:';
+            },
         },
-    },
-    {
-        type: 'input',
-        name: 'email',
-        message: `What is the ${role}'s email address?`,
-        validate(text) {
-            if (text.length == 0 || (text.includes("@", 1) && text.indexOf("@") < text.length - 1)) {
-                return true;
-            }
-            return 'Enter a valid email:';
+        {
+            type: 'input',
+            name: 'email',
+            message: `What is the ${role}'s email address?`,
+            validate(text) {
+                if (text.length == 0 || (text.includes("@", 1) && text.indexOf("@") < text.length - 1)) {
+                    return true;
+                }
+                return 'Enter a valid email:';
+            },
         },
-    },
-]
+    ]
 }
 
+// Question only for a manager
 const managerQuestion = [
     {
         type: 'input',
@@ -61,20 +60,20 @@ const managerQuestion = [
             }
             return 'Enter a valid number:';
         },
-
     },
 ]
 
+// Options for adding employee or terminating the app
 const addStaffQuestion = [
     {
         type: 'list',
         name: 'staff',
         message: "Add another staff?",
         choices: ["Add an engineer", "Add an intern", "Finish building the team"],
-
     },
 ]
 
+// Question only for engineers
 const engineerQuestion = [
     {
         type: 'input',
@@ -83,50 +82,60 @@ const engineerQuestion = [
     },
 ]
 
+// Question only for interns
 const internQuestion = [
     {
         type: 'input',
         name: 'school',
         message: "What is the intern's school name?",
+        validate(text) {
+            if (/^[a-zA-Z\s]+$/.test(text) && text.charAt(0) != ' ') {
+                return true;
+            }
+            return `Enter a valid name:`;
+        },
     },
 ];
-   
-const team =[];
+
+const team = [];
 
 // Function to prompt questions
 function inquire(questions, type) {
 
     inquirer.prompt(questions)
         .then((answers) => {
-            if(type == "manager"){
+            if (type == "manager") {
 
                 team.push(new Manager(answers.name, answers.employeeId, answers.email, answers.officeNo));
                 inquire(addStaffQuestion, "addStaff");
-            } else if(type == "addStaff"){
-                if(answers.staff == "Add an engineer"){
+
+            } else if (type == "addStaff") {
+
+                if (answers.staff == "Add an engineer") {
                     inquire(generalQuestions("engineer").concat(engineerQuestion), "engineer")
 
-                }else if(answers.staff == "Add an intern"){
+                } else if (answers.staff == "Add an intern") {
                     inquire(generalQuestions("intern").concat(internQuestion), "intern")
 
-                } else{
-                    // generate html
-                    
+                } else {
+                    // Generates html
                     const html = render(team);
 
+                    // Writes the html file
                     fs.writeFile(outputPath, html, (err) => {
                         err ? console.error(err) : console.log('File created in the ./output directory!');
                     });
                 }
-            } else if(type == "engineer"){
+            } else if (type == "engineer") {
+
                 team.push(new Engineer(answers.name, answers.employeeId, answers.email, answers.github));
                 inquire(addStaffQuestion, "addStaff");
+
             } else {
+
                 team.push(new Intern(answers.name, answers.employeeId, answers.email, answers.school));
                 inquire(addStaffQuestion, "addStaff");
             }
-         
-            
         })
         .catch((error) => {
             if (error.isTtyError) {
