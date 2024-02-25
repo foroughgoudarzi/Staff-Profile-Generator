@@ -19,10 +19,10 @@ const generalQuestions = role => {return [
         name: 'name',
         message: `What is the ${role}'s name?`,
         validate(text) {
-            if (text.length != 0) {
+            if (text.length != 0 && /^[a-zA-Z]+$/.test(text)) {
                 return true;
             }
-            return `Enter the ${role}'s name:`;
+            return `Enter a valid name:`;
         },
     },
     {
@@ -104,7 +104,7 @@ function inquire(questions, type) {
                 inquire(addStaffQuestion, "addStaff");
             } else if(type == "addStaff"){
                 if(answers.staff == "Add an engineer"){
-                    inquire(generalQuestions("employee").concat(engineerQuestion), "engineer")
+                    inquire(generalQuestions("engineer").concat(engineerQuestion), "engineer")
 
                 }else if(answers.staff == "Add an intern"){
                     inquire(generalQuestions("intern").concat(internQuestion), "intern")
